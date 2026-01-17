@@ -47,7 +47,7 @@ body {
 
 .message {
     font-size: 0.85rem;
-    color: #ffb6c1;
+    color: #ffffff;
     margin-top: 8px;
     width: 100%;
     line-height: 1.4;
@@ -148,6 +148,9 @@ body {
     border-radius: 12px;
     padding: 10px;
     backdrop-filter: blur(10px);
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .daily-items {
@@ -163,8 +166,9 @@ body {
 }
 
 .daily-day {
-    font-size: 1rem;
-    min-width: 50px;
+    font-size: 0.85rem;
+    min-width: 0;
+    white-space: nowrap;
 }
 
 .daily-icon {
