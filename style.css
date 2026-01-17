@@ -77,6 +77,12 @@ body {
     color: #a0a0a0;
 }
 
+.location {
+    font-size: 0.9rem;
+    color: #a0a0a0;
+    margin-left: auto;
+}
+
 /* 時間ごとの予報 */
 .hourly-forecast {
     display: flex;

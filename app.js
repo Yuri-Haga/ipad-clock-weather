@@ -6,6 +6,7 @@ const feelsLikeEl = document.getElementById('feels-like');
 const weatherIconEl = document.getElementById('weather-icon');
 const hourlyForecastEl = document.getElementById('hourly-forecast');
 const dailyForecastEl = document.getElementById('daily-forecast');
+const locationEl = document.getElementById('location');
 const statusEl = document.getElementById('status');
 
 // 天気コードから絵文字への変換
@@ -84,9 +85,26 @@ function getLocation() {
     });
 }
 
+// 地名の取得（逆ジオコーディング）
+async function fetchLocationName(lat, lon) {
+    try {
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ja`;
+        const response = await fetch(url, {
+            headers: { 'User-Agent': 'WeatherWidget/1.0' }
+        });
+        if (!response.ok) return null;
+        const data = await response.json();
+        // 市区町村名を取得（city > town > village > county の順で探す）
+        const address = data.address;
+        return address.city || address.town || address.village || address.county || address.state || null;
+    } catch {
+        return null;
+    }
+}
+
 // 天気情報の取得
 async function fetchWeather(lat, lon) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia/Tokyo&forecast_hours=7&forecast_days=3`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia/Tokyo&forecast_hours=7&forecast_days=5`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -136,7 +154,7 @@ function updateWeatherDisplay(data) {
     dailyForecastEl.innerHTML = '';
     const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
 
-    for (let i = 1; i < Math.min(3, daily.time.length); i++) {
+    for (let i = 1; i < Math.min(5, daily.time.length); i++) {
         const date = new Date(daily.time[i]);
         const dayName = dayNames[date.getDay()];
         const high = Math.round(daily.temperature_2m_max[i]);
@@ -163,9 +181,17 @@ async function updateWeather() {
         const location = await getLocation();
 
         statusEl.textContent = '天気情報を取得中...';
-        const weather = await fetchWeather(location.lat, location.lon);
+        const [weather, locationName] = await Promise.all([
+            fetchWeather(location.lat, location.lon),
+            fetchLocationName(location.lat, location.lon)
+        ]);
 
         updateWeatherDisplay(weather);
+
+        // 地名を表示
+        if (locationName && locationEl) {
+            locationEl.textContent = locationName;
+        }
 
         const now = new Date();
         statusEl.textContent = `最終更新: ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
