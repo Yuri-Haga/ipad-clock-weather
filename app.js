@@ -170,7 +170,7 @@ function updateWeatherDisplay(data) {
     if (todayHighLowEl && daily.temperature_2m_max && daily.temperature_2m_min) {
         const todayHigh = Math.round(daily.temperature_2m_max[0]);
         const todayLow = Math.round(daily.temperature_2m_min[0]);
-        todayHighLowEl.textContent = `↑${todayHigh}° ↓${todayLow}°`;
+        todayHighLowEl.textContent = `${todayHigh}° / ${todayLow}°`;
     }
     if (precipitationEl && daily.precipitation_probability_max) {
         const precip = daily.precipitation_probability_max[0];

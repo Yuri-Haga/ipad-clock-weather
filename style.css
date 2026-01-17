@@ -33,20 +33,25 @@ body {
 /* 時計セクション（左側） */
 .time-section {
     flex-shrink: 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .time {
     font-size: 4.5rem;
     font-weight: 200;
     letter-spacing: 2px;
+    white-space: nowrap;
 }
 
 .message {
     font-size: 0.85rem;
     color: #ffb6c1;
     margin-top: 8px;
-    max-width: 280px;
+    width: 100%;
     line-height: 1.4;
+    word-break: break-word;
 }
 
 /* 天気セクション（右側） */
