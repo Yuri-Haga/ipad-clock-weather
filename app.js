@@ -7,7 +7,44 @@ const weatherIconEl = document.getElementById('weather-icon');
 const hourlyForecastEl = document.getElementById('hourly-forecast');
 const dailyForecastEl = document.getElementById('daily-forecast');
 const locationEl = document.getElementById('location');
+const todayHighLowEl = document.getElementById('today-high-low');
+const precipitationEl = document.getElementById('precipitation');
+const messageEl = document.getElementById('message');
 const statusEl = document.getElementById('status');
+
+// ツンデレお嬢様の励ましメッセージ
+const tsundereMessages = [
+    "べ、別にあなたのために応援してるわけじゃないんだからね！",
+    "今日も頑張りなさいよ...見てあげるから",
+    "あなたならできるって...信じてるわよ、ちょっとだけ",
+    "無理しないでよね...心配させないで",
+    "今日もお疲れさま...って、感謝してるわけじゃないんだから！",
+    "しっかりしなさい！...でも、たまには休んでもいいのよ？",
+    "ふん、あなたの頑張り、ちゃんと見てるんだから",
+    "今日も元気そうね...よかった、なんて思ってないんだから",
+    "あなたがいないと...つまらないなんて言ってないわよ！",
+    "素敵な一日になりますように...って、お節介じゃないんだから！",
+    "今日の調子はどう？...別に気にしてるわけじゃないけど",
+    "笑顔、忘れないでよね...見てると元気もらえる、なんて",
+    "失敗しても大丈夫よ...私がそばにいるから、なんて",
+    "今日も輝いてるわね...眩しいって言ってるんじゃないわよ！",
+    "ゆっくり進めばいいのよ...焦らなくていいんだから",
+    "あなたの味方よ...いつだって、なんて恥ずかしいこと言わないけど",
+    "今日も一緒にいられて...嬉しいとか思ってないんだからね！",
+    "頑張りすぎないで...私が心配するでしょ！",
+    "素敵な出会いがありますように...って、別に祈ってないけど",
+    "今日のあなた、なんだかいい感じね...褒めてないわよ！",
+    "ちゃんと食べてる？...お節介じゃないんだから",
+    "あなたの笑顔が見たい...なんて、思ってないわよ！",
+    "今日も最高の一日にしなさい！...応援してるんだから",
+    "疲れたら言いなさいよ...私が癒してあげる、なんて",
+    "あなたなら大丈夫...私が保証するわ",
+    "今日も可愛いわね...って、からかってるんじゃないわよ！",
+    "一緒にいると楽しい...とか言わないんだから！",
+    "あなたの努力、ちゃんと知ってるわよ...認めてあげる",
+    "今日も素敵ね...って、毎日言ってるわけじゃないわよ！",
+    "いつもありがとう...なんて、照れくさいこと言わないけど"
+];
 
 // 天気コードから絵文字への変換
 const weatherCodeToEmoji = {
@@ -102,9 +139,16 @@ async function fetchLocationName(lat, lon) {
     }
 }
 
+// 今日のメッセージを取得
+function getTodayMessage() {
+    const today = new Date();
+    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+    return tsundereMessages[seed % tsundereMessages.length];
+}
+
 // 天気情報の取得
 async function fetchWeather(lat, lon) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia/Tokyo&forecast_hours=7&forecast_days=5`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia/Tokyo&forecast_hours=7&forecast_days=5`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -120,6 +164,18 @@ function updateWeatherDisplay(data) {
     temperatureEl.textContent = `${Math.round(current.temperature_2m)}°`;
     feelsLikeEl.textContent = `体感 ${Math.round(current.apparent_temperature)}°`;
     weatherIconEl.textContent = getWeatherEmoji(current.weather_code);
+
+    // 今日の最高/最低気温と降水確率
+    const daily = data.daily;
+    if (todayHighLowEl && daily.temperature_2m_max && daily.temperature_2m_min) {
+        const todayHigh = Math.round(daily.temperature_2m_max[0]);
+        const todayLow = Math.round(daily.temperature_2m_min[0]);
+        todayHighLowEl.textContent = `↑${todayHigh}° ↓${todayLow}°`;
+    }
+    if (precipitationEl && daily.precipitation_probability_max) {
+        const precip = daily.precipitation_probability_max[0];
+        precipitationEl.textContent = `☔ ${precip}%`;
+    }
 
     // 時間ごとの予報
     const hourly = data.hourly;
@@ -150,7 +206,6 @@ function updateWeatherDisplay(data) {
     }
 
     // 日別予報（明日・明後日）
-    const daily = data.daily;
     dailyForecastEl.innerHTML = '';
     const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -207,6 +262,11 @@ function init() {
     // 時計を開始
     updateDateTime();
     setInterval(updateDateTime, 1000);
+
+    // 今日のメッセージを表示
+    if (messageEl) {
+        messageEl.textContent = getTodayMessage();
+    }
 
     // 天気を取得
     updateWeather();

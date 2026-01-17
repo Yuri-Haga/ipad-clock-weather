@@ -41,6 +41,14 @@ body {
     letter-spacing: 2px;
 }
 
+.message {
+    font-size: 0.85rem;
+    color: #ffb6c1;
+    margin-top: 8px;
+    max-width: 280px;
+    line-height: 1.4;
+}
+
 /* 天気セクション（右側） */
 .weather {
     flex: 1;
@@ -75,6 +83,23 @@ body {
 .feels-like {
     font-size: 1rem;
     color: #a0a0a0;
+}
+
+.today-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-left: 8px;
+}
+
+.today-high-low {
+    font-size: 0.9rem;
+    color: #ffffff;
+}
+
+.precipitation {
+    font-size: 0.85rem;
+    color: #87ceeb;
 }
 
 .location {
