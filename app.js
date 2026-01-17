@@ -5,6 +5,7 @@ const temperatureEl = document.getElementById('temperature');
 const feelsLikeEl = document.getElementById('feels-like');
 const weatherIconEl = document.getElementById('weather-icon');
 const hourlyForecastEl = document.getElementById('hourly-forecast');
+const dailyForecastEl = document.getElementById('daily-forecast');
 const statusEl = document.getElementById('status');
 
 // 天気コードから絵文字への変換
@@ -85,7 +86,7 @@ function getLocation() {
 
 // 天気情報の取得
 async function fetchWeather(lat, lon) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&timezone=Asia/Tokyo&forecast_hours=7`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia/Tokyo&forecast_hours=7&forecast_days=3`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -128,6 +129,28 @@ function updateWeatherDisplay(data) {
             <span class="hour-temp">${temp}°</span>
         `;
         hourlyForecastEl.appendChild(hourItem);
+    }
+
+    // 日別予報（明日・明後日）
+    const daily = data.daily;
+    dailyForecastEl.innerHTML = '';
+    const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+
+    for (let i = 1; i < Math.min(3, daily.time.length); i++) {
+        const date = new Date(daily.time[i]);
+        const dayName = dayNames[date.getDay()];
+        const high = Math.round(daily.temperature_2m_max[i]);
+        const low = Math.round(daily.temperature_2m_min[i]);
+        const code = daily.weather_code[i];
+
+        const dailyItem = document.createElement('div');
+        dailyItem.className = 'daily-item';
+        dailyItem.innerHTML = `
+            <span class="daily-day">${date.getMonth() + 1}/${date.getDate()}(${dayName})</span>
+            <span class="daily-icon">${getWeatherEmoji(code)}</span>
+            <span class="daily-temps"><span class="daily-high">${high}°</span> / <span class="daily-low">${low}°</span></span>
+        `;
+        dailyForecastEl.appendChild(dailyItem);
     }
 }
 

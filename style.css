@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-    padding: 8px 16px;
+    padding: 20px 16px 8px;
     width: 100%;
 }
 
@@ -104,6 +104,47 @@ body {
 
 .hour-temp {
     font-size: 1.1rem;
+}
+
+/* 日別予報 */
+.daily-forecast {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.daily-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.daily-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.daily-day {
+    font-size: 1rem;
+    min-width: 50px;
+}
+
+.daily-icon {
+    font-size: 1.4rem;
+}
+
+.daily-temps {
+    font-size: 0.95rem;
+}
+
+.daily-high {
+    color: #ffffff;
+}
+
+.daily-low {
+    color: #a0a0a0;
 }
 
 /* ステータス */
