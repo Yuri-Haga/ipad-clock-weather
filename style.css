@@ -18,7 +18,7 @@ body {
 
 /* 日付 */
 .date {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #a0a0a0;
     margin-bottom: 4px;
 }
@@ -36,7 +36,7 @@ body {
 }
 
 .time {
-    font-size: 3.5rem;
+    font-size: 4.5rem;
     font-weight: 200;
     letter-spacing: 2px;
 }
@@ -59,7 +59,7 @@ body {
 }
 
 .weather-icon {
-    font-size: 2.2rem;
+    font-size: 2.8rem;
 }
 
 .temp-info {
@@ -68,12 +68,12 @@ body {
 }
 
 .temperature {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: 300;
 }
 
 .feels-like {
-    font-size: 0.85rem;
+    font-size: 1rem;
     color: #a0a0a0;
 }
 
@@ -94,16 +94,16 @@ body {
 }
 
 .hour-time {
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     color: #a0a0a0;
 }
 
 .hour-icon {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
 }
 
 .hour-temp {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
 }
 
 /* ステータス */
