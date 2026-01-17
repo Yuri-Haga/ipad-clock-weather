@@ -53,11 +53,10 @@ function updateDateTime() {
     const weekday = weekdays[now.getDay()];
     dateEl.textContent = `${year}年${month}月${day}日（${weekday}）`;
 
-    // 時刻
+    // 時刻（秒なし）
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    timeEl.textContent = `${hours}:${minutes}:${seconds}`;
+    timeEl.textContent = `${hours}:${minutes}`;
 }
 
 // 天気コードから絵文字を取得

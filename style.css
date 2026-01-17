@@ -9,9 +9,6 @@ body {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     color: #ffffff;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .container {
@@ -21,10 +18,9 @@ body {
 
 /* 日付 */
 .date {
-    text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     color: #a0a0a0;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
 }
 
 /* メインコンテンツ（横並び） */
