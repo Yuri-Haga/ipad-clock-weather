@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    padding: 20px;
+    width: 100%;
+    max-width: 320px;
+}
+
+/* 日時セクション */
+.datetime {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.date {
+    font-size: 1rem;
+    color: #a0a0a0;
+    margin-bottom: 5px;
+}
+
+.time {
+    font-size: 3.5rem;
+    font-weight: 200;
+    letter-spacing: 2px;
+}
+
+/* 現在の天気 */
+.weather {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    backdrop-filter: blur(10px);
+}
+
+.current-weather {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.weather-icon {
+    font-size: 2.5rem;
+}
+
+.temp-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.temperature {
+    font-size: 2rem;
+    font-weight: 300;
+}
+
+.feels-like {
+    font-size: 0.85rem;
+    color: #a0a0a0;
+}
+
+/* 時間ごとの予報 */
+.hourly-forecast {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 12px;
+    overflow-x: auto;
+    gap: 8px;
+}
+
+.hour-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 45px;
+    gap: 4px;
+}
+
+.hour-time {
+    font-size: 0.75rem;
+    color: #a0a0a0;
+}
+
+.hour-icon {
+    font-size: 1.2rem;
+}
+
+.hour-temp {
+    font-size: 0.9rem;
+}
+
+/* ステータス */
+.status {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 12px;
+}
+
+.status.error {
+    color: #ff6b6b;
+}
+
+/* レスポンシブ */
+@media (max-width: 280px) {
+    .time {
+        font-size: 2.5rem;
+    }
+
+    .temperature {
+        font-size: 1.5rem;
+    }
+}
