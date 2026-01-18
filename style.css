@@ -139,6 +139,7 @@ body {
 /* 時間ごとの行 */
 .hourly-row {
     display: flex;
+    flex-direction: row;
     overflow-x: auto;
     gap: 6px;
 }
@@ -181,6 +182,7 @@ body {
     align-items: center;
     min-width: 42px;
     gap: 3px;
+    flex-shrink: 0;
 }
 
 .hour-time {
