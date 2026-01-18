@@ -12,39 +12,57 @@ const precipitationEl = document.getElementById('precipitation');
 const messageEl = document.getElementById('message');
 const statusEl = document.getElementById('status');
 
-// ツンデレお嬢様の励ましメッセージ
-const tsundereMessages = [
-    "べ、別にあなたのために応援してるわけじゃないんだからね！",
-    "今日も頑張りなさいよ...見てあげるから",
-    "あなたならできるって...信じてるわよ、ちょっとだけ",
-    "無理しないでよね...心配させないで",
-    "今日もお疲れさま...って、感謝してるわけじゃないんだから！",
-    "しっかりしなさい！...でも、たまには休んでもいいのよ？",
-    "ふん、あなたの頑張り、ちゃんと見てるんだから",
-    "今日も元気そうね...よかった、なんて思ってないんだから",
-    "あなたがいないと...つまらないなんて言ってないわよ！",
-    "素敵な一日になりますように...って、お節介じゃないんだから！",
-    "今日の調子はどう？...別に気にしてるわけじゃないけど",
-    "笑顔、忘れないでよね...見てると元気もらえる、なんて",
-    "失敗しても大丈夫よ...私がそばにいるから、なんて",
-    "今日も輝いてるわね...眩しいって言ってるんじゃないわよ！",
-    "ゆっくり進めばいいのよ...焦らなくていいんだから",
-    "あなたの味方よ...いつだって、なんて恥ずかしいこと言わないけど",
-    "今日も一緒にいられて...嬉しいとか思ってないんだからね！",
-    "頑張りすぎないで...私が心配するでしょ！",
-    "素敵な出会いがありますように...って、別に祈ってないけど",
-    "今日のあなた、なんだかいい感じね...褒めてないわよ！",
-    "ちゃんと食べてる？...お節介じゃないんだから",
-    "あなたの笑顔が見たい...なんて、思ってないわよ！",
-    "今日も最高の一日にしなさい！...応援してるんだから",
-    "疲れたら言いなさいよ...私が癒してあげる、なんて",
-    "あなたなら大丈夫...私が保証するわ",
-    "今日も可愛いわね...って、からかってるんじゃないわよ！",
-    "一緒にいると楽しい...とか言わないんだから！",
-    "あなたの努力、ちゃんと知ってるわよ...認めてあげる",
-    "今日も素敵ね...って、毎日言ってるわけじゃないわよ！",
-    "いつもありがとう...なんて、照れくさいこと言わないけど"
-];
+// ツンデレお嬢様の時間帯別メッセージ
+const timeBasedMessages = {
+    // 朝 (7:00-9:59)
+    morning: [
+        "おはよう...ちゃんと起きられたのね",
+        "朝から頑張るなんて...見直したわ、ちょっとだけ",
+        "今日も一日、しっかりやりなさいよね！",
+        "朝ごはん、ちゃんと食べた？...別に心配してないけど",
+        "いい朝ね...あなたと迎えられて、なんて思ってないわよ！"
+    ],
+    // 午前 (10:00-12:59)
+    lateMorning: [
+        "午前中が勝負よ、分かってるわね？",
+        "集中しなさいよ...見てるんだから",
+        "調子はどう？...別に気にしてるわけじゃないけど",
+        "ふん、なかなか頑張ってるじゃない",
+        "お昼まであと少しよ...ペース配分、考えなさいよね"
+    ],
+    // 午後 (13:00-15:59)
+    afternoon: [
+        "午後も気を抜かないでよね",
+        "眠くなってないでしょうね？しっかりしなさい！",
+        "お昼ちゃんと食べた？...聞いてるだけよ",
+        "午後も頑張りなさい...応援してあげるわ、特別に",
+        "あと半日よ、最後まで気を抜かないで！"
+    ],
+    // 夕方 (16:00-18:59)
+    evening: [
+        "もうひと踏ん張りよ、できるわよね？",
+        "今日も頑張ったわね...ちょっとだけ認めてあげる",
+        "そろそろ終わりが見えてきたわね...お疲れさま、なんて",
+        "夕方まで頑張れるなんて...見直したわ",
+        "今日の締めくくり、しっかりやりなさいよ！"
+    ],
+    // 夜 (19:00-21:59)
+    night: [
+        "今日もお疲れさま...感謝してるわけじゃないけど",
+        "ゆっくり休んでいいのよ...許可してあげるわ",
+        "今日一日、よく頑張ったわね...褒めてないわよ！",
+        "夜は自分の時間よ...好きに過ごしなさい",
+        "リラックスしなさいよ...あなたには必要だから"
+    ],
+    // 深夜 (22:00-6:59)
+    lateNight: [
+        "こんな時間まで...無理しないでよね",
+        "早く寝なさいよ...心配してるわけじゃないけど",
+        "夜更かしはお肌に悪いのよ？...あなたのためを思って言ってるの",
+        "まだ起きてるの？...付き合ってあげるわ、仕方ないから",
+        "おやすみ...って、別に優しくしてるわけじゃないんだから！"
+    ]
+};
 
 // 天気コードから絵文字への変換
 const weatherCodeToEmoji = {
@@ -96,6 +114,15 @@ function updateDateTime() {
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     timeEl.textContent = `${hours}:${minutes}`;
+
+    // 時間帯が変わったらメッセージを更新
+    const newPeriod = getTimePeriod(now.getHours());
+    if (newPeriod !== currentPeriod) {
+        currentPeriod = newPeriod;
+        if (messageEl) {
+            messageEl.textContent = getTimeBasedMessage();
+        }
+    }
 }
 
 // 天気コードから絵文字を取得
@@ -139,12 +166,30 @@ async function fetchLocationName(lat, lon) {
     }
 }
 
-// 今日のメッセージを取得
-function getTodayMessage() {
-    const today = new Date();
-    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-    return tsundereMessages[seed % tsundereMessages.length];
+// 時間帯を取得
+function getTimePeriod(hour) {
+    if (hour >= 7 && hour < 10) return 'morning';
+    if (hour >= 10 && hour < 13) return 'lateMorning';
+    if (hour >= 13 && hour < 16) return 'afternoon';
+    if (hour >= 16 && hour < 19) return 'evening';
+    if (hour >= 19 && hour < 22) return 'night';
+    return 'lateNight'; // 22:00-6:59
 }
+
+// 時間帯別メッセージを取得
+function getTimeBasedMessage() {
+    const now = new Date();
+    const hour = now.getHours();
+    const period = getTimePeriod(hour);
+    const messages = timeBasedMessages[period];
+
+    // 日付をシードにして同じ時間帯では同じメッセージを表示
+    const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+    return messages[seed % messages.length];
+}
+
+// 現在の時間帯を保持
+let currentPeriod = null;
 
 // 天気情報の取得
 async function fetchWeather(lat, lon) {
@@ -263,9 +308,11 @@ function init() {
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    // 今日のメッセージを表示
+    // 時間帯別メッセージを表示（初期化）
+    const now = new Date();
+    currentPeriod = getTimePeriod(now.getHours());
     if (messageEl) {
-        messageEl.textContent = getTodayMessage();
+        messageEl.textContent = getTimeBasedMessage();
     }
 
     // 天気を取得
