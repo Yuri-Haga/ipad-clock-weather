@@ -136,15 +136,16 @@ body {
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* 時間アイテムのコンテナ */
-.hourly-items {
+/* 時間ごとの行 */
+.hourly-row {
     display: flex;
     overflow-x: auto;
     gap: 6px;
 }
 
-/* 追加時間分のアニメーション */
-.hour-item-extra {
+/* 2行目（追加の6時間） */
+.hourly-row.extra-row {
+    margin-top: 8px;
     animation: fadeIn 0.3s ease-out;
 }
 
