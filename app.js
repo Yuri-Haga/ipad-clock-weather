@@ -191,9 +191,24 @@ function getTimeBasedMessage() {
 // 現在の時間帯を保持
 let currentPeriod = null;
 
+// 時間ごと予報の展開状態を保持
+let isHourlyExpanded = false;
+
+// 天気データのキャッシュ（展開/折りたたみ時の再描画用）
+let lastWeatherData = null;
+
+// 時間ごと予報の展開/折りたたみを切り替え
+function toggleHourlyForecast() {
+    isHourlyExpanded = !isHourlyExpanded;
+    hourlyForecastEl.classList.toggle('expanded', isHourlyExpanded);
+    if (lastWeatherData) {
+        updateWeatherDisplay(lastWeatherData);
+    }
+}
+
 // 天気情報の取得
 async function fetchWeather(lat, lon) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia/Tokyo&forecast_hours=7&forecast_days=5`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,apparent_temperature&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia/Tokyo&forecast_hours=13&forecast_days=5`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -204,6 +219,9 @@ async function fetchWeather(lat, lon) {
 
 // 天気表示の更新
 function updateWeatherDisplay(data) {
+    // データをキャッシュ
+    lastWeatherData = data;
+
     // 現在の天気
     const current = data.current;
     temperatureEl.textContent = `${Math.round(current.temperature_2m)}°`;
@@ -226,29 +244,42 @@ function updateWeatherDisplay(data) {
     const hourly = data.hourly;
     hourlyForecastEl.innerHTML = '';
 
-    // 現在時刻のインデックスを見つける
-    const now = new Date();
-    const currentHour = now.getHours();
+    // 時間アイテムのコンテナを作成
+    const itemsContainer = document.createElement('div');
+    itemsContainer.className = 'hourly-items';
 
-    // 次の6時間分を表示
-    for (let i = 0; i < 6; i++) {
-        const hourIndex = i; // APIはforecast_hours=7で現在から7時間分を返す
-        if (hourIndex >= hourly.time.length) break;
+    // 表示する時間数を決定（折りたたみ時6時間、展開時12時間）
+    const hoursToShow = isHourlyExpanded ? 12 : 6;
 
-        const time = new Date(hourly.time[hourIndex]);
+    for (let i = 0; i < hoursToShow; i++) {
+        if (i >= hourly.time.length) break;
+
+        const time = new Date(hourly.time[i]);
         const hour = time.getHours();
-        const temp = Math.round(hourly.temperature_2m[hourIndex]);
-        const code = hourly.weather_code[hourIndex];
+        const temp = Math.round(hourly.temperature_2m[i]);
+        const code = hourly.weather_code[i];
 
         const hourItem = document.createElement('div');
         hourItem.className = 'hour-item';
+        if (i >= 6) {
+            hourItem.classList.add('hour-item-extra');
+        }
         hourItem.innerHTML = `
             <span class="hour-time">${hour}時</span>
             <span class="hour-icon">${getWeatherEmoji(code)}</span>
             <span class="hour-temp">${temp}°</span>
         `;
-        hourlyForecastEl.appendChild(hourItem);
+        itemsContainer.appendChild(hourItem);
     }
+
+    // 展開インジケーターを追加
+    const indicator = document.createElement('div');
+    indicator.className = 'expand-indicator';
+    indicator.innerHTML = isHourlyExpanded ? '▲' : '▼';
+
+    hourlyForecastEl.appendChild(itemsContainer);
+    hourlyForecastEl.appendChild(indicator);
+    hourlyForecastEl.onclick = toggleHourlyForecast;
 
     // 日別予報（明日・明後日）
     dailyForecastEl.innerHTML = '';
