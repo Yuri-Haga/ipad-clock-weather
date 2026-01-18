@@ -244,14 +244,15 @@ function updateWeatherDisplay(data) {
     const hourly = data.hourly;
     hourlyForecastEl.innerHTML = '';
 
-    // 時間アイテムのコンテナを作成
-    const itemsContainer = document.createElement('div');
-    itemsContainer.className = 'hourly-items';
+    // 1行目のコンテナ（最初の6時間）
+    const row1 = document.createElement('div');
+    row1.className = 'hourly-row';
 
-    // 表示する時間数を決定（折りたたみ時6時間、展開時12時間）
-    const hoursToShow = isHourlyExpanded ? 12 : 6;
+    // 2行目のコンテナ（追加の6時間）
+    const row2 = document.createElement('div');
+    row2.className = 'hourly-row extra-row';
 
-    for (let i = 0; i < hoursToShow; i++) {
+    for (let i = 0; i < 12; i++) {
         if (i >= hourly.time.length) break;
 
         const time = new Date(hourly.time[i]);
@@ -261,15 +262,17 @@ function updateWeatherDisplay(data) {
 
         const hourItem = document.createElement('div');
         hourItem.className = 'hour-item';
-        if (i >= 6) {
-            hourItem.classList.add('hour-item-extra');
-        }
         hourItem.innerHTML = `
             <span class="hour-time">${hour}時</span>
             <span class="hour-icon">${getWeatherEmoji(code)}</span>
             <span class="hour-temp">${temp}°</span>
         `;
-        itemsContainer.appendChild(hourItem);
+
+        if (i < 6) {
+            row1.appendChild(hourItem);
+        } else {
+            row2.appendChild(hourItem);
+        }
     }
 
     // 展開インジケーターを追加
@@ -277,7 +280,10 @@ function updateWeatherDisplay(data) {
     indicator.className = 'expand-indicator';
     indicator.innerHTML = isHourlyExpanded ? '▲' : '▼';
 
-    hourlyForecastEl.appendChild(itemsContainer);
+    hourlyForecastEl.appendChild(row1);
+    if (isHourlyExpanded) {
+        hourlyForecastEl.appendChild(row2);
+    }
     hourlyForecastEl.appendChild(indicator);
     hourlyForecastEl.onclick = toggleHourlyForecast;
 
